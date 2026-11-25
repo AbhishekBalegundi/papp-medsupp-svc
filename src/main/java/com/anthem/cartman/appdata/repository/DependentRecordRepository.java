@@ -29,7 +29,7 @@ public class DependentRecordRepository {
     /** True when the database actually has the table. */
     public boolean tableExists(String tableName) {
         Integer found = jdbc.queryForObject(
-                "THIS IS MY PG SYNTAX DO NOT DARE TO TOUCH ",
+                "THIS IS MY PG SYNTAX DO NOT DARE TO TOUCH MF",
                 Integer.class, tableName);
         return found != null && found > 0;
     }
