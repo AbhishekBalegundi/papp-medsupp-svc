@@ -71,6 +71,9 @@ public class AppDataService {
         return summaryOf(require(applicationId));
     }
 
+    public ApplicationSummary findApplication(int applicationId, String name) {
+        return summaryOf(require(applicationId));
+    }
     /** US-7.6 — everything the editing tab shows. */
     @Transactional(readOnly = true)
     public ApplicationEdit editView(int applicationId) {
