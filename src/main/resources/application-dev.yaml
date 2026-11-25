@@ -1,0 +1,21 @@
+# Development against the shared COSMO database.
+# Credentials are overridable so the same build runs in every environment;
+# set CARTMAN_DB_* in the platform rather than editing this file.
+spring:
+  datasource:
+    url: ${CARTMAN_DB_URL:jdbc:jtds:sqlserver://64.227.131.72:8433;databaseName=cosmo;ssl=request;socketTimeout=30;loginTimeout=10}
+    username: ${CARTMAN_DB_USER:sa}
+    password: ${CARTMAN_DB_PASSWORD:SimplifyDB123$}
+    driver-class-name: net.sourceforge.jtds.jdbc.Driver
+    hikari:
+      # jTDS 1.3.1 predates JDBC 4, so Connection.isValid() throws AbstractMethodError.
+      # Hikari must probe with a query instead.
+      connection-test-query: SELECT 1
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+
+logging:
+  level:
+    com.anthem.cartman: DEBUG

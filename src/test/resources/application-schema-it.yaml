@@ -1,0 +1,41 @@
+# Profile for LoginSchemaIT only — the one test that touches the shared COSMO server.
+#
+# It is deliberately self-contained rather than layered on 'dev'. The incident that
+# destroyed TM_Login happened because a test activated 'dev' for its datasource and
+# silently kept the schema settings of the profile underneath it. This profile states
+# every value it needs, so nothing it does depends on what another layer left behind.
+#
+# The test is read-only. Nothing here may create, alter or drop an object:
+#   - ddl-auto none, restated even though SchemaManagementGuard already enforces it
+#   - the connection is opened read-only, so the server rejects writes outright
+#   - no sql init, no schema.sql, no Hibernate DDL of any kind
+spring:
+  datasource:
+    url: ${CARTMAN_IT_DB_URL:jdbc:jtds:sqlserver://64.227.131.72:8433;databaseName=cosmo;ssl=request;socketTimeout=30;loginTimeout=10}
+    username: ${CARTMAN_IT_DB_USER:sa}
+    password: ${CARTMAN_IT_DB_PASSWORD:SimplifyDB123$}
+    driver-class-name: net.sourceforge.jtds.jdbc.Driver
+    hikari:
+      pool-name: cartman-schema-it
+      maximum-pool-size: 2
+      read-only: true
+      # jTDS 1.3.1 predates JDBC 4, so Connection.isValid() throws AbstractMethodError.
+      connection-test-query: SELECT 1
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+  sql:
+    init:
+      mode: never
+
+cartman:
+  cors:
+    allowed-origins: http://localhost:4200
+
+logging:
+  level:
+    com.anthem.cartman: INFO

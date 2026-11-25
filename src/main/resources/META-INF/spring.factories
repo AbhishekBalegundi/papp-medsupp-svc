@@ -1,0 +1,4 @@
+# Runs before any datasource is built, so a bad ddl-auto fails the boot instead of
+# reaching the database. See SchemaManagementGuard for why this is enforced in code.
+org.springframework.boot.EnvironmentPostProcessor=\
+com.anthem.cartman.common.config.SchemaManagementGuard

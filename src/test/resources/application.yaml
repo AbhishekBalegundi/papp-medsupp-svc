@@ -1,0 +1,21 @@
+# Unit-test context: an in-memory database purely so the Spring context can start.
+#
+# ddl-auto is none here, exactly as it is in every other profile. It is deliberately
+# NOT create-drop: this file is the base layer for every test, so anything it sets
+# survives when a test activates another profile on top. A create-drop here once
+# reached the shared SQL Server via @ActiveProfiles("dev") and dropped TM_Login.
+# Tests that need tables must create them explicitly (schema.sql or @Sql), never by
+# letting Hibernate infer them from the entity mappings.
+spring:
+  datasource:
+    url: jdbc:h2:mem:cartman;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+cartman:
+  cors:
+    allowed-origins: http://localhost:4200

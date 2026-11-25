@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: cartman
+  profiles:
+    default: dev
+
+  # Module 11 takes in a scanned application. A cap is set because nothing in CARTMAN sets one, and an
+  # unbounded upload is a way to fill the database — see the open question on file size.
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 26MB
+
+  # The existing Delphi schema. CARTMAN never creates or alters it. TM_App_Images was created once,
+  # deliberately and with approval, because Module 11's only table was absent (A74); ddl-auto stays none.
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc.batch_size: 50
+        order_inserts: true
+        order_updates: true
+        query.in_clause_parameter_padding: true
+
+  datasource:
+    hikari:
+      pool-name: cartman-pool
+      maximum-pool-size: ${CARTMAN_DB_POOL_MAX:10}
+      minimum-idle: ${CARTMAN_DB_POOL_MIN:2}
+      connection-timeout: 20000
+      idle-timeout: 120000
+      max-lifetime: 180000
+      leak-detection-threshold: 30000
+
+server:
+  port: ${SERVER_PORT:8090}
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+  compression:
+    enabled: true
+    mime-types: application/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+  health:
+    db:
+      enabled: true
+
+cartman:
+  cors:
+    # The Angular dev server. Tighten per environment.
+    allowed-origins: ${CARTMAN_CORS_ORIGINS:http://localhost:4200}
+  # Credentials the claims queue rows carry (Module 8). No defaults: the Delphi compiled
+  # 'cartman'/'cartman' into the executable, and queueing refuses to run without these.
+  claims:
+    login: ${CARTMAN_CLAIMS_LOGIN:}
+    password: ${CARTMAN_CLAIMS_PASSWORD:}
+  # The Cosmo System Administrator password for the Tools Administrator screen.
+  # No default: when the variable is unset the gate rejects everything.
+  admin-password: ${CARTMAN_ADMIN_PASSWORD:ras1j127}
+
+logging:
+  level:
+    root: INFO
+    com.anthem.cartman: ${CARTMAN_LOG_LEVEL:INFO}
+    CARTMAN.AUDIT: INFO
