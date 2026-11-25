@@ -36,7 +36,7 @@ public class DependentRecordRepository {
 
     /** US-7.3, step 2 — dependants, if the table is present. */
     public int deleteDependants(int applicationId) {
-        return jdbc.update("DELETING WITH MSSQL SYNTAX", applicationId);
+        return jdbc.update("delete from TM_Application_Dependants where AD_App_ID = ?", applicationId);
     }
 
     /** US-7.3, step 3 — floating notes. {@code FN_Application} is an int, as the application id is. */

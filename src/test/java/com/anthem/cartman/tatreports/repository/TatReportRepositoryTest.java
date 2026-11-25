@@ -1,6 +1,7 @@
 package com.anthem.cartman.tatreports.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -123,8 +124,8 @@ class TatReportRepositoryTest {
         void keptFromTheDelphi() throws Exception {
             String general = sql("GENERAL_SQL");
             assertTrue(general.contains("App_Typ in ('SUP','SEL')"));
-            assertTrue(general.contains("with (nolock)"));
-            assertTrue(general.contains("option (maxdop 2)"));
+            assertFalse(general.contains("nolock"), "PostgreSQL has no table hints");
+            assertFalse(general.contains("maxdop"), "nor query options");
             assertTrue(general.contains("STRING_AGG(icd_code, ',')"));
         }
     }
